@@ -1,0 +1,7 @@
+*/rb list
+*/rb exceptions (list of exc.)
+*permissions
+*PERMISSIONS
+*ban whole countries by hostname
+*log ips and predict users ip ranges based on that
+*mysql?
