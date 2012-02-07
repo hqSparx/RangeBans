@@ -1,0 +1,9 @@
+name: RangeBans
+main: me.hqSparx.RangeBans.RangeBans
+version: 0.93
+description: Ban dynamic IP addresses
+authors: [hqSparx]
+commands:
+  rb:
+    description: Primary command for RangeBans.
+    aliases: [rbans, rangeban, rangebans, rban]
