@@ -184,10 +184,19 @@ public class RangeBans extends JavaPlugin {
 				commandhandler.removeexception(sender, args[1]);
 				return true;
 		  	}
-			if (args[0].equals("ip") && args.length == 2) {
-				commandhandler.checkip(sender, args[1]);
+			if (args[0].equals("listbans")) {
+				String page = "";
+				page = (args.length > 1) ? args[1] : "1";
+				commandhandler.bansList(sender, page);
 				return true;
 		  	}
+			if (args[0].equals("listexceptions")) {
+				String page = "";
+				page = (args.length > 1) ? args[1] : "1";
+				commandhandler.exceptionsList(sender, page);
+				return true;
+		  	}
+			
 			strings.msg(sender, "Oops! Wrong syntax, check /rb for help.");
 		} else 
 			strings.msg(sender, "Sorry, you cannot access this command.");	
@@ -210,6 +219,14 @@ public class RangeBans extends JavaPlugin {
 			}
 		}
 		return false;
+	}
+	
+	public String get(int i){
+		return list.get(i).Address;
+	}
+	
+	public String getException(int i){
+		return exceptions.get(i);
 	}
 	
 	public boolean checkmin(int i, byte a, byte b, byte c, byte d) {

@@ -133,5 +133,42 @@ public class RBCommandHandler {
 			if (ip == null || ip == "") plugin.strings.msg(sender, ("&cFailed to load player's IP: " + name));
 		}
 	}
+	
+	public void bansList(CommandSender sender, String pagestr) {
+		
+		final int PER_PAGE = 10;
+		int page = Integer.parseInt(pagestr);
+		int pos = PER_PAGE * (page - 1);
+		
+		String header = "&6Bans list (page " + page + ")";
+		plugin.strings.msg(sender, header);
+		
+		for(int i = pos; i < pos + PER_PAGE; i++){
+			String line = "";
+			if(i < plugin.size()) { 
+			line = "&7#" + (i + 1) + " &a" + plugin.get(i);
+			}
+			plugin.strings.msg(sender, line);
+		}
+	}
+	
+	public void exceptionsList(CommandSender sender, String pagestr) {
+		
+		final int PER_PAGE = 10;
+		int page = Integer.parseInt(pagestr);
+		int pos = PER_PAGE * (page - 1);
+		
+		String header = "&6Exceptions list (page " + page + ")";
+		plugin.strings.msg(sender, header);
+		
+		for(int i = pos; i < pos + PER_PAGE; i++){
+			String line = "";
+			if(i < plugin.exceptionssize()) { 
+			line = "&7#" + (i + 1) + " &a" + plugin.getException(i);
+			}
+			plugin.strings.msg(sender, line);
+		}
+	}
+	
 
 }

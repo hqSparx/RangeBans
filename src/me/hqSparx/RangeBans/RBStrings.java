@@ -34,6 +34,9 @@ public class RBStrings {
 		sender.sendMessage(colorizeString("&a/rb exception [nick]                       &7adds exception"));
 		sender.sendMessage(colorizeString("&a/rb removeexception [nick]              &7removes exception"));
 		sender.sendMessage(colorizeString("&a/rb reload                                   &7reloads plugin"));
+		sender.sendMessage(colorizeString("&a/rb listbans [page]                        &7list bans"));
+		sender.sendMessage(colorizeString("&a/rb listexceptions [page]                &7list exceptions"));
+
 	}
 	
 	public void msg(CommandSender sender, String string) {
