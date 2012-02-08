@@ -21,8 +21,7 @@ public class RBStrings {
             return "";
     }
 	
-	public void sendHelp(CommandSender sender)
-	{
+	public void sendHelp(CommandSender sender) {
 		sender.sendMessage(colorizeString("&6" + plugin.getDescription().getName() + " " +
 				plugin.getDescription().getVersion() + " by " + 
 				plugin.getDescription().getAuthors().get(0)));
@@ -37,58 +36,51 @@ public class RBStrings {
 		sender.sendMessage(colorizeString("&a/rb reload                                   &7reloads plugin"));
 	}
 	
-	public void msg(CommandSender sender, String string)
-	{
+	public void msg(CommandSender sender, String string) {
 		sender.sendMessage(colorizeString(string));
 	}
 	
-	public String kick()
-	{
+	public String kick() {
 		return colorizeString(banmsg);
 	}
 	
-	public void BroadcastBlock(String name, String ip)
-	{
+	public void BroadcastBlock(String name, String ip) {
 		String msg = "&7Player " + name + "(" + 
-	ip + ") was kicked by RangeBans.";
+			ip + ") was kicked by RangeBans.";
 	
-		if(broadcastblock){
-		Player players[] = plugin.getServer().getOnlinePlayers();
-		for(int i = 0; i < players.length; i++){
-		if(players[i].isOp())
-		players[i].sendMessage(colorizeString(msg));
-		}
-		plugin.logger.info(colorizeString(msg));
+		if (broadcastblock) {
+			Player players[] = plugin.getServer().getOnlinePlayers();
+			for (int i = 0; i < players.length; i++) {
+				if (players[i].isOp())
+					players[i].sendMessage(colorizeString(msg));
+			}
+			plugin.logger.info(colorizeString(msg));
 		}
 	}
 	
-	public void BroadcastPass(String name, String ip)
-	{
+	public void BroadcastPass(String name, String ip) {
 		String msg = "&7Player " + name + "(" + 
-	ip + ") found on exceptions list. Passing.";
+			ip + ") found on exceptions list. Passing.";
 	
-		if(broadcastpass){
-		Player players[] = plugin.getServer().getOnlinePlayers();
-		for(int i = 0; i < players.length; i++){
-			if(players[i].isOp())
-		players[i].sendMessage(colorizeString(msg));
-		}
-		plugin.logger.info(colorizeString(msg));
+		if (broadcastpass) {
+			Player players[] = plugin.getServer().getOnlinePlayers();
+			for (int i = 0; i < players.length; i++) {
+				if (players[i].isOp())
+					players[i].sendMessage(colorizeString(msg));
+			}
+			plugin.logger.info(colorizeString(msg));
 		}
 	}
 	
-	public void SetBroadcastBlocks(boolean set)
-	{
+	public void SetBroadcastBlocks(boolean set) {
 		broadcastblock = set;
 	}
 	
-	public void SetBroadcastPasses(boolean set)
-	{
+	public void SetBroadcastPasses(boolean set) {
 		broadcastpass = set;
 	}
 	
-	public void SetBanMsg(String set)
-	{
+	public void SetBanMsg(String set) {
 		banmsg = set;
 	}
 	
