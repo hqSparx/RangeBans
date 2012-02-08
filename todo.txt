@@ -1,6 +1,5 @@
 to-do:
-*permissions
-*PERMISSIONS
+*upgrade permissions
 *ban whole countries by hostname
 *log ips and predict users ip ranges based on that
 *mysql?
@@ -8,3 +7,4 @@ to-do:
 done for next release:
 */listbans
 */listexceptions
+*simple perms system

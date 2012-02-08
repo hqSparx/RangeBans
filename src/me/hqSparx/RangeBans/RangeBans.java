@@ -151,7 +151,7 @@ public class RangeBans extends JavaPlugin {
     //TODO refactor it
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		
-		if (sender.isOp() || sender.hasPermission("RB.access")) {
+		if (sender.isOp() || sender.hasPermission("rb.access")) {
 			if (args.length == 0 || args.length > 4) {
 				strings.sendHelp(sender);
 				return true;
@@ -180,7 +180,8 @@ public class RangeBans extends JavaPlugin {
 				commandhandler.exception(sender, args[1]);
 				return true;
 		  	}
-			if (args[0].equals("removeexception") && args.length == 2) {
+			if ((args[0].equals("removeexception") || args[0].equals("removeex"))
+					&& args.length == 2) {
 				commandhandler.removeexception(sender, args[1]);
 				return true;
 		  	}
@@ -194,7 +195,8 @@ public class RangeBans extends JavaPlugin {
 				commandhandler.bansList(sender, page);
 				return true;
 		  	}
-			if (args[0].equals("listexceptions") && args.length <= 2) {
+			if ((args[0].equals("listexceptions") || args[0].equals("listex"))
+					&& args.length <= 2) {
 				String page = "";
 				page = (args.length > 1) ? args[1] : "1";
 				commandhandler.exceptionsList(sender, page);

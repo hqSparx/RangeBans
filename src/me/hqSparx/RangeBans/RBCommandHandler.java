@@ -139,8 +139,9 @@ public class RBCommandHandler {
 		final int PER_PAGE = 10;
 		int page = Integer.parseInt(pagestr);
 		int pos = PER_PAGE * (page - 1);
+		int size = plugin.size();
 		
-		String header = "&6Bans list (page " + page + ")";
+		String header = "&6Bans list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";	
 		plugin.strings.msg(sender, header);
 		
 		for(int i = pos; i < pos + PER_PAGE; i++){
@@ -157,8 +158,9 @@ public class RBCommandHandler {
 		final int PER_PAGE = 10;
 		int page = Integer.parseInt(pagestr);
 		int pos = PER_PAGE * (page - 1);
+		int size = plugin.exceptionssize();
 		
-		String header = "&6Exceptions list (page " + page + ")";
+		String header = "&6Exceptions list (page " + page + "/" + ( size / PER_PAGE + 1 ) + ")";		
 		plugin.strings.msg(sender, header);
 		
 		for(int i = pos; i < pos + PER_PAGE; i++){
