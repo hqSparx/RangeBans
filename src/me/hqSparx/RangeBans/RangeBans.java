@@ -184,13 +184,17 @@ public class RangeBans extends JavaPlugin {
 				commandhandler.removeexception(sender, args[1]);
 				return true;
 		  	}
-			if (args[0].equals("listbans")) {
+			if (args[0].equals("ip") && args.length == 2) {
+				commandhandler.checkip(sender, args[1]);
+				return true;
+			}
+			if (args[0].equals("listbans") && args.length <= 2) {
 				String page = "";
 				page = (args.length > 1) ? args[1] : "1";
 				commandhandler.bansList(sender, page);
 				return true;
 		  	}
-			if (args[0].equals("listexceptions")) {
+			if (args[0].equals("listexceptions") && args.length <= 2) {
 				String page = "";
 				page = (args.length > 1) ? args[1] : "1";
 				commandhandler.exceptionsList(sender, page);
