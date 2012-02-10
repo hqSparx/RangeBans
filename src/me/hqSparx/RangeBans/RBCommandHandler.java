@@ -20,7 +20,7 @@ public class RBCommandHandler {
 	
 	public boolean command(CommandSender sender, String[] args) {
 		
-		if (args.length == 0 || args.length > 4) {
+		if ((args.length == 0 || args.length > 4) && checkPerm(sender, "rb.help")) {
 			plugin.strings.sendHelp(sender);
 			return true;
 		}
