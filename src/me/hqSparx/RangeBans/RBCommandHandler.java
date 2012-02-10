@@ -6,6 +6,7 @@ public class RBCommandHandler {
    
 	public static RangeBans plugin;
 	public static String regex = "[0-9\\.\\-\\*]*";
+	private boolean lastresult = true;
 	public RBCommandHandler(RangeBans instance) {
 		plugin = instance;
 	}
@@ -18,13 +19,15 @@ public class RBCommandHandler {
 	}
 	
 	public boolean command(CommandSender sender, String[] args) {
-		int len = args.length;
-		String label = args[0];
-	
+		
 		if (args.length == 0 || args.length > 4) {
 			plugin.strings.sendHelp(sender);
 			return true;
 		}
+			
+		int len = args.length;
+		String label = args[0];	
+			
 		if (label.equals("reload") && checkPerm(sender, "rb.reload")) {
 			plugin.doReload(sender);
 			return true;
@@ -35,6 +38,14 @@ public class RBCommandHandler {
 		}
 		if (label.equals("unban") && checkPerm(sender, "rb.ban") && len >= 2) {
 			unban(sender, args);
+			return true;
+		}
+		if (label.equals("banhost") && checkPerm(sender, "rb.ban") && len == 2) {
+			banhost(sender, args[1]);
+			return true;
+		}
+		if (label.equals("unbanhost") && checkPerm(sender, "rb.ban") && len == 2) {
+			unbanhost(sender, args[1]);
 			return true;
 		}
 		if (label.equals("exception") && checkPerm(sender, "rb.exception") && len == 2) {
@@ -55,6 +66,12 @@ public class RBCommandHandler {
 			bansList(sender, page);
 			return true;
 		}
+		if (label.equals("listhosts") && checkPerm(sender, "rb.list") && len <= 2) {
+			String page = "";
+			page = (args.length > 1) ? args[1] : "1";
+			hostbansList(sender, page);
+			return true;
+		}
 		if (label.contains("listex") && checkPerm(sender, "rb.list") && len <= 2) {
 			String page = "";
 			page = (args.length > 1) ? args[1] : "1";
@@ -62,7 +79,9 @@ public class RBCommandHandler {
 			return true;
 		}
 		
-		plugin.strings.msg(sender, "Oops! Wrong syntax, check /rb for help.");
+		if(lastresult)
+			plugin.strings.msg(sender, "Oops! Wrong syntax, check /rb for help.");
+		
 		return true;
 	}
 	
@@ -130,12 +149,16 @@ public class RBCommandHandler {
 	
 	
 	public boolean checkPerm(CommandSender sender, String permission){
-		if(sender.hasPermission(permission)) return true;
-			else {
-				plugin.strings.msg(sender, "Sorry, you cannot access this command.");
-				return false;
-			}
+		if(sender.hasPermission(permission) || sender.hasPermission("rb.*")) {
+			lastresult = true;
+			return true;
 		}
+		else {
+			plugin.strings.msg(sender, "Sorry, you cannot access this command.");
+			lastresult = false;
+			return false;
+		}
+	}
 		
 		
 	public void ban(CommandSender sender, String[] args) {
@@ -169,6 +192,30 @@ public class RBCommandHandler {
 				plugin.strings.msg(sender, "&cFailed to unban: " + range.Address);
 		} else 
 			plugin.strings.msg(sender, "&cWrong IP range, check syntax");
+	}
+	
+	
+	public void banhost(CommandSender sender, String host) {
+			if (plugin.addhostname(host)) {
+				try {
+					plugin.saveLists();
+				} catch (Exception e) { e.printStackTrace(); }
+				plugin.strings.msg(sender, "&eBanning hostname: " + host);
+				plugin.logger.info(sender.getName() + " banned hostname: " + host);
+			} else 
+				plugin.strings.msg(sender, "&cFailed to ban: " + host);
+	}
+	
+	
+	public void unbanhost(CommandSender sender, String host) {
+			if (plugin.removehostname(host)) {
+				try {
+					plugin.saveLists();
+				} catch (Exception e) { e.printStackTrace(); }
+				plugin.strings.msg(sender, "&eUnbanning hostname: " + host);
+				plugin.logger.info(sender.getName() + " unbanned hostname: " + host);
+			} else 
+				plugin.strings.msg(sender, "&cFailed to unban: " + host);
 	}
 	
 	
@@ -218,7 +265,7 @@ public class RBCommandHandler {
 		
 		for (int i = pos; i < pos + PER_PAGE; i++) {
 			String line = "";
-			if (i < plugin.size())
+			if (i < size)
 				line = "&7#" + (i + 1) + " &a" + plugin.get(i);
 			plugin.strings.msg(sender, line);
 		}
@@ -229,15 +276,32 @@ public class RBCommandHandler {
 		final int PER_PAGE = 10;
 		int page = Integer.parseInt(pagestr);
 		int pos = PER_PAGE * (page - 1);
-		int size = plugin.exceptionssize();
+		int size = plugin.exceptionsSize();
 		
 		String header = "&6Exceptions list (page " + page + "/" + ( size / PER_PAGE + 1 ) + ")";		
 		plugin.strings.msg(sender, header);
 		
 		for (int i = pos; i < pos + PER_PAGE; i++) {
 			String line = "";
-			if (i < plugin.exceptionssize())
+			if (i < size)
 				line = "&7#" + (i + 1) + " &a" + plugin.getException(i);
+			plugin.strings.msg(sender, line);
+		}
+	}
+	
+	public void hostbansList(CommandSender sender, String pagestr) {
+		final int PER_PAGE = 10;
+		int page = Integer.parseInt(pagestr);
+		int pos = PER_PAGE * (page - 1);
+		int size = plugin.hostsSize();
+		
+		String header = "&6Hostname bans list (page " + page + "/" + ( size / PER_PAGE + 1 ) + ")";		
+		plugin.strings.msg(sender, header);
+		
+		for (int i = pos; i < pos + PER_PAGE; i++) {
+			String line = "";
+			if (i < size)
+				line = "&7#" + (i + 1) + " &a" + plugin.getHost(i);
 			plugin.strings.msg(sender, line);
 		}
 	}

@@ -28,7 +28,8 @@ public class RangeBans extends JavaPlugin {
 	
 	public static List<RBIPFields> list = new ArrayList<RBIPFields>(1024);
 	public static List<String> exceptions = new ArrayList<String>(1024);
-	
+	public static List<String> hostnames = new ArrayList<String>(1024);
+	public static boolean whitelist = false;
 	
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = this.getDescription();
@@ -56,11 +57,13 @@ public class RangeBans extends JavaPlugin {
     	YamlConfiguration config = YamlConfiguration.loadConfiguration(cfgFile);
     	config.addDefault("broadcast-kicks", true);
     	config.addDefault("broadcast-passes", true);
-    	config.addDefault("ban-msg", "&cSorry, your IP range is banned from this server.");
+    	config.addDefault("use-hostnames-as-whitelist", false);
+    	config.addDefault("ban-msg", "&cSorry, you are banned from this server.");
     	config.options().copyDefaults(true);
         config.save(cfgFile);
 	    strings.SetBroadcastBlocks(config.getBoolean("broadcast-kicks"));  
 	    strings.SetBroadcastPasses(config.getBoolean("broadcast-passes"));  
+	    whitelist = config.getBoolean("use-hostnames-as-whitelist");
 	    strings.SetBanMsg(config.getString("ban-msg")); 
 	 }
     
@@ -68,6 +71,7 @@ public class RangeBans extends JavaPlugin {
     public void loadLists() throws IOException {
     	File bansFile = new File(this.getDataFolder() + "/bans.txt");
     	File exceptionsFile = new File(this.getDataFolder() + "/exceptions.txt");
+    	File hostnamesFile = new File(this.getDataFolder() + "/hostnames.txt");
 
     	try {
     		BufferedReader input =  new BufferedReader(new FileReader(bansFile));
@@ -76,9 +80,11 @@ public class RangeBans extends JavaPlugin {
 		        while ((line = input.readLine()) != null) {
 		        	line = line.trim();
 			        if (line.length() > 0) {
-			        	for (int i = 0; i < list.size(); i++) 
-			        		if (!(line.contentEquals(list.get(i).Address))) 
-			        			add(commandhandler.checkIP(line));
+			        	boolean dont = false;
+			        	for(int i = 0; i < list.size(); i++) {
+			        		if(line.contains(list.get(i).Address)) dont = true;
+			        	}
+			        	if(!dont) add(commandhandler.checkIP(line));
 			        }
 			     }
 	    	 } finally {
@@ -94,30 +100,58 @@ public class RangeBans extends JavaPlugin {
 		        while ((line = input.readLine()) != null) {
 		        	line = line.trim();
 			        if (line.length() > 0) {
-			        	for (int i = 0; i < exceptions.size(); i++) 
-			        		if (!(line.contentEquals(exceptions.get(i)))) 
-			        			exceptions.add(line);
+			        	boolean dont = false;
+			        	for(int i = 0; i < exceptions.size(); i++) {
+			        		if(line.contains(exceptions.get(i))) dont = true;
+			        	}
+			        	if(!dont) exceptions.add(line);
 			        }
 		        }
 	    	} finally {
 	    		input.close();
      	    }
     	} catch (Exception e) { logger.info("Cant load exceptions.txt"); } 	
+    	
+    	try {
+        	BufferedReader input =  new BufferedReader(new FileReader(hostnamesFile));
+	    	try {
+		        String line;
+		        while ((line = input.readLine()) != null) {
+		        	line = line.trim();
+			        if (line.length() > 0) {
+			        	boolean dont = false;
+			        	for(int i = 0; i < hostnames.size(); i++) {
+			        		if(line.contains(hostnames.get(i))) dont = true;
+			        	}
+			        	if(!dont) hostnames.add(line);
+			        }
+		        }
+	    	} finally {
+	    		input.close();
+     	    }
+    	} catch (Exception e) { logger.info("Cant load hostnames.txt"); } 	
+    	
     }
     
   //TODO refactor it
     public void saveLists() throws IOException {
     	File bansFile = new File(this.getDataFolder() + "/bans.txt");
     	File exceptionsFile = new File(this.getDataFolder() + "/exceptions.txt");
-	   	
+    	File hostnamesFile = new File(this.getDataFolder() + "/hostnames.txt");
+    	
     	try {
     		BufferedWriter output =  new BufferedWriter(new FileWriter(bansFile));
     		try {
     			List<String> written = new ArrayList<String>(1024);
     			for (int i = 0; i < list.size(); i++) {
-		    	   for (int j = 0; j < written.size(); j++) 
-		    		   if (!(written.get(j).contentEquals(list.get(i).Address))) 
-							output.write(list.get(i).Address + "\r\n");
+    				boolean dont = false;
+    				for (int j = 0; j < written.size(); j++) {
+		    		   if (written.get(j).contentEquals(list.get(i).Address)) dont = true;
+    				}
+					if(!dont) {
+					output.write(list.get(i).Address + "\r\n");
+					written.add(list.get(i).Address);
+					}
     			}
     		} finally {
     			output.close();
@@ -129,14 +163,39 @@ public class RangeBans extends JavaPlugin {
 			try {
 				List<String> written = new ArrayList<String>(1024);
 				for (int i = 0; i < exceptions.size(); i++) {
-					for (int j = 0; j<written.size(); j++) 
-						if (!(written.get(j).contentEquals(exceptions.get(i)))) 
-							output.write(exceptions.get(i) + "\r\n");
+    				boolean dont = false;
+					for (int j = 0; j<written.size(); j++) {
+						if (written.get(j).contentEquals(exceptions.get(i))) dont = true;
+					}
+					if(!dont) {
+						output.write(exceptions.get(i) + "\r\n");
+						written.add(exceptions.get(i));
+					}
 					}
 			    } finally {
 			    	output.close();
 			    }
 			} catch (Exception e) { e.printStackTrace(); }	
+	   	
+	   	try {
+		   	BufferedWriter output =  new BufferedWriter(new FileWriter(hostnamesFile));
+			try {
+				List<String> written = new ArrayList<String>(1024);
+				for (int i = 0; i < hostnames.size(); i++) {
+					boolean dont = false;
+					for (int j = 0; j<written.size(); j++) {
+						if (written.get(j).contentEquals(hostnames.get(i))) dont = true;
+				}
+					if(!dont) {
+					output.write(hostnames.get(i) + "\r\n");
+					written.add(hostnames.get(i));
+					}
+					}
+			    } finally {
+			    	output.close();
+			    }
+			} catch (Exception e) { e.printStackTrace(); }	
+	   	
     }
     
     public boolean doReload(CommandSender sender){
@@ -181,6 +240,10 @@ public class RangeBans extends JavaPlugin {
 		return exceptions.get(i);
 	}
 	
+	public String getHost(int i) {
+		return hostnames.get(i);
+	}
+
 	public boolean checkmin(int i, byte a, byte b, byte c, byte d) {
 		//	logger.info("bmin0:" + list.get(i).bMin[0] + " bmin1:" + list.get(i).bMin[1] + " bmin2:" + list.get(i).bMin[2] + " bmin3:" + list.get(i).bMin[3]);
 		//	logger.info("bmax0:" + list.get(i).bMax[0] + " bmax1:" + list.get(i).bMax[1] + " bmax2:" + list.get(i).bMax[2] + " bmax3:" + list.get(i).bMax[3]);
@@ -201,8 +264,12 @@ public class RangeBans extends JavaPlugin {
 		return list.size();	
 	}
 	
-	public int exceptionssize() {
+	public int exceptionsSize() {
 		return exceptions.size();	
+	}
+	
+	public int hostsSize() {
+		return hostnames.size();	
 	}
 	
 	public boolean addexception(String name) {
@@ -229,5 +296,43 @@ public class RangeBans extends JavaPlugin {
 		
 		return false;	
 	}	
-		
+	
+	public boolean addhostname(String hostname) {
+		if (hostnames.add(hostname)) 
+			return true;
+		else 
+			return false;
+	}
+	
+	public boolean removehostname(String hostname) {
+		for (int i = 0; i < hostnames.size(); i++) {
+			if (hostnames.get(i).contentEquals(hostname)) {
+				hostnames.remove(i); return true;	
+			}
+		}
+		return false;
+	}
+	
+	public boolean checkhostname(String hostname) {
+		String[] split = hostname.split("\\.");
+		for(int i = split.length - 1; i >= 0; i--){
+			
+			//backward hostname
+			String merged = ""; 
+			for(int j = i; j < split.length; j++) {
+				merged += split[j];
+				if(j < split.length - 1) merged += ".";
+			}
+			
+			for (int k = 0; k < hostnames.size(); k++) {;
+				if (hostnames.get(k).equalsIgnoreCase(merged))
+					if(whitelist) return false;
+					else return true;
+			}
+		}
+		if(whitelist) return true;
+		else return false;
+	}
+
+	
 }

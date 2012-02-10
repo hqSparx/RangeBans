@@ -1,5 +1,4 @@
 to-do:
-*ban whole countries by hostname + whitelist config opt
 *autoupdater
 *log ips and predict users ip ranges based on that
 *mysql?
@@ -8,3 +7,5 @@ done for next release:
 */listbans
 */listexceptions
 *permissions
+*ban whole countries by hostname + whitelist config opt
+*general code tweaks

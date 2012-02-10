@@ -1,6 +1,6 @@
 name: RangeBans
 main: me.hqSparx.RangeBans.RangeBans
-version: 0.93
+version: 1.00
 description: Ban dynamic IP addresses
 authors: [hqSparx]
 commands:

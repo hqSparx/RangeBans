@@ -1,5 +1,8 @@
 package me.hqSparx.RangeBans;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -30,13 +33,19 @@ public class RBPlayerListener extends PlayerListener {
         alternative = false;
 		String ipstring  = event.getKickMessage();
 		String name = event.getPlayer().getName();
+		String hostname = "";
 		if (ipstring == "" || ipstring == null) {
 			plugin.logger.info("[RangeBans] Warning! Couldn't load "+name
 				+"'s IP. Possibly plugins conflict. Using alternative method."); 
 			alternative = true; 
 			return;
 		}
-		plugin.logger.info("[RangeBans] Detected ip: " + ipstring);
+		try {
+			InetAddress inet = InetAddress.getByName(ipstring);
+			hostname = inet.getHostName();
+		} catch (UnknownHostException e) {}
+		
+		plugin.logger.info("[RangeBans] Detected ip: " + ipstring + " Detected hostname: " + hostname);
 		String[] split = ipstring.split("\\.");
 		byte[] ip = new byte[4];
 		ip[0] = checkByte(split[0]);
@@ -44,7 +53,6 @@ public class RBPlayerListener extends PlayerListener {
 		ip[2] = checkByte(split[2]);
 		ip[3] = checkByte(split[3]);
 
-		if (plugin.size() > 0) 
 			for (int i = 0; i < plugin.size(); i++) {
 				if (plugin.checkmin(i, ip[0], ip[1], ip[2], ip[3]) 
 						&& plugin.checkmax(i, ip[0], ip[1], ip[2], ip[3])) {
@@ -59,7 +67,20 @@ public class RBPlayerListener extends PlayerListener {
 					}
 				}
 			}
-
+			
+			if (hostname.length() > 0 && plugin.checkhostname(hostname)) {
+				if (plugin.checkexception(name)) {
+					plugin.strings.BroadcastPass(name, hostname);
+					return;
+			}	else {
+					plugin.strings.BroadcastBlock(name, hostname);
+					event.disallow(Result.KICK_OTHER, plugin.strings.kick());
+					event.setResult(Result.KICK_OTHER);
+					return;
+				}
+			
+			}
+		
 	}
 	
 	@Override
