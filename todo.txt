@@ -1,10 +1,10 @@
 to-do:
-*upgrade permissions
-*ban whole countries by hostname
+*ban whole countries by hostname + whitelist config opt
+*autoupdater
 *log ips and predict users ip ranges based on that
 *mysql?
 
 done for next release:
 */listbans
 */listexceptions
-*simple perms system
+*permissions

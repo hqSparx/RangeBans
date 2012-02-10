@@ -51,7 +51,7 @@ public class RangeBans extends JavaPlugin {
 		
 	}
 	
-    private void loadConfiguration() throws IOException {
+    public void loadConfiguration() throws IOException {
     	File cfgFile = new File(this.getDataFolder() + "/config.yml");
     	YamlConfiguration config = YamlConfiguration.loadConfiguration(cfgFile);
     	config.addDefault("broadcast-kicks", true);
@@ -148,66 +148,21 @@ public class RangeBans extends JavaPlugin {
 			} catch (Exception e) { e.printStackTrace(); }	
     }
     
-    //TODO refactor it
+    public boolean doReload(CommandSender sender){
+    	PluginDescriptionFile pdfFile = getDescription();
+    	String reloaded = pdfFile.getName() + " version " + pdfFile.getVersion() + " reloaded.";
+    	try {
+    		loadConfiguration();
+    	} catch (Exception e) { e.printStackTrace(); }
+    	try {
+    		loadLists();
+    	} catch (Exception e) { e.printStackTrace(); }		
+    	strings.msg(sender, "&a" + reloaded);
+		return true;
+    }
+    
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		
-		if (sender.isOp() || sender.hasPermission("rb.access")) {
-			if (args.length == 0 || args.length > 4) {
-				strings.sendHelp(sender);
-				return true;
-			}
-			if (args[0].equals("reload")) {
-				PluginDescriptionFile pdfFile = this.getDescription();
-				String reloaded = pdfFile.getName() + " version " + pdfFile.getVersion() + " reloaded.";
-				try {
-					loadConfiguration();
-				} catch (Exception e) { e.printStackTrace(); }
-				try {
-					loadLists();
-				} catch (Exception e) { e.printStackTrace(); }		
-				strings.msg(sender, "&a" + reloaded);
-				return true;
-			}
-			if (args[0].equals("ban") && args.length >= 2) {
-				commandhandler.ban(sender, args);
-				return true;
-		  	}
-			if (args[0].equals("unban") && args.length >= 2) {
-				commandhandler.unban(sender, args);
-				return true;
-		  	}
-			if (args[0].equals("exception") && args.length == 2) {
-				commandhandler.exception(sender, args[1]);
-				return true;
-		  	}
-			if ((args[0].equals("removeexception") || args[0].equals("removeex"))
-					&& args.length == 2) {
-				commandhandler.removeexception(sender, args[1]);
-				return true;
-		  	}
-			if (args[0].equals("ip") && args.length == 2) {
-				commandhandler.checkip(sender, args[1]);
-				return true;
-			}
-			if (args[0].equals("listbans") && args.length <= 2) {
-				String page = "";
-				page = (args.length > 1) ? args[1] : "1";
-				commandhandler.bansList(sender, page);
-				return true;
-		  	}
-			if ((args[0].equals("listexceptions") || args[0].equals("listex"))
-					&& args.length <= 2) {
-				String page = "";
-				page = (args.length > 1) ? args[1] : "1";
-				commandhandler.exceptionsList(sender, page);
-				return true;
-		  	}
-			
-			strings.msg(sender, "Oops! Wrong syntax, check /rb for help.");
-		} else 
-			strings.msg(sender, "Sorry, you cannot access this command.");	
-		
-	return false;
+		return commandhandler.command(sender, args);
 	}
 	
 	public boolean add(RBIPFields addr) {

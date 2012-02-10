@@ -17,6 +17,56 @@ public class RBCommandHandler {
 			return Byte.parseByte(word);
 	}
 	
+	public boolean command(CommandSender sender, String[] args) {
+		int len = args.length;
+		String label = args[0];
+	
+		if (args.length == 0 || args.length > 4) {
+			plugin.strings.sendHelp(sender);
+			return true;
+		}
+		if (label.equals("reload") && checkPerm(sender, "rb.reload")) {
+			plugin.doReload(sender);
+			return true;
+		}
+		if (label.equals("ban") && checkPerm(sender, "rb.ban") && len >= 2) {
+			ban(sender, args);
+			return true;
+		}
+		if (label.equals("unban") && checkPerm(sender, "rb.ban") && len >= 2) {
+			unban(sender, args);
+			return true;
+		}
+		if (label.equals("exception") && checkPerm(sender, "rb.exception") && len == 2) {
+			exception(sender, args[1]);
+			return true;
+		}
+		if (label.contains("removeex") && checkPerm(sender, "rb.exception") && len == 2) {
+			removeexception(sender, args[1]);
+			return true;
+		}
+		if (label.equals("ip") && checkPerm(sender, "rb.check") && len == 2) {
+			checkip(sender, args[1]);
+			return true;
+		}
+		if (label.equals("listbans") && checkPerm(sender, "rb.list") && len <= 2) {
+			String page = "";
+			page = (args.length > 1) ? args[1] : "1";
+			bansList(sender, page);
+			return true;
+		}
+		if (label.contains("listex") && checkPerm(sender, "rb.list") && len <= 2) {
+			String page = "";
+			page = (args.length > 1) ? args[1] : "1";
+			exceptionsList(sender, page);
+			return true;
+		}
+		
+		plugin.strings.msg(sender, "Oops! Wrong syntax, check /rb for help.");
+		return true;
+	}
+	
+	
 	public String mergeargs(String[] tomerge) {
 		String output = "";
 		for(int i = 1; i < tomerge.length; i++)
@@ -24,6 +74,7 @@ public class RBCommandHandler {
 		
 		return output;
 	}
+	
 	
 	public RBIPFields checkIP(String ip) {
 		ip = ip.replace(" ", "");
@@ -76,6 +127,16 @@ public class RBCommandHandler {
 		return new RBIPFields(min, max, ip2);
 	}
 	
+	
+	public boolean checkPerm(CommandSender sender, String permission){
+		if(sender.hasPermission(permission)) return true;
+			else {
+				plugin.strings.msg(sender, "Sorry, you cannot access this command.");
+				return false;
+			}
+		}
+		
+		
 	public void ban(CommandSender sender, String[] args) {
 		String ip = mergeargs(args);
 		if (ip.matches(regex)) {
@@ -89,6 +150,7 @@ public class RBCommandHandler {
 			} else plugin.strings.msg(sender, "&cFailed to ban: " + range.Address);
 		} else plugin.strings.msg(sender, "&cWrong IP range, check syntax");
 	}
+	
 	
 	public void unban(CommandSender sender, String[] args) {
 		String ip = mergeargs(args);
@@ -104,6 +166,7 @@ public class RBCommandHandler {
 		} else plugin.strings.msg(sender, "&cWrong IP range, check syntax");
 	}
 	
+	
 	public void exception(CommandSender sender, String name) {
 		 if (plugin.addexception(name)) {
 	    	try {
@@ -113,6 +176,7 @@ public class RBCommandHandler {
 	    	plugin.logger.info(sender.getName() + " added nickname exception: " + name);
 		 } else plugin.strings.msg(sender, ("&cFailed to add nickname exception: " + name));
 	}
+	
 	
 	public void removeexception(CommandSender sender, String name) {
 		if (plugin.removeexception(name)) {
@@ -124,6 +188,7 @@ public class RBCommandHandler {
 		} else plugin.strings.msg(sender, ("&cFailed to remove nickname exception: " + name));
 	}
 	
+	
 	public void checkip(CommandSender sender, String name) {
 		String ip = "";
 		try {
@@ -133,6 +198,7 @@ public class RBCommandHandler {
 			if (ip == null || ip == "") plugin.strings.msg(sender, ("&cFailed to load player's IP: " + name));
 		}
 	}
+	
 	
 	public void bansList(CommandSender sender, String pagestr) {
 		
@@ -152,6 +218,7 @@ public class RBCommandHandler {
 			plugin.strings.msg(sender, line);
 		}
 	}
+	
 	
 	public void exceptionsList(CommandSender sender, String pagestr) {
 		
