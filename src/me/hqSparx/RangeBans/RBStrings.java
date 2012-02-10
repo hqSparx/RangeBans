@@ -57,7 +57,7 @@ public class RBStrings {
 		if (broadcastblock) {
 			Player players[] = plugin.getServer().getOnlinePlayers();
 			for (int i = 0; i < players.length; i++) {
-				if (players[i].isOp() || plugin.commandhandler.checkPerm(players[i], "rb.broadcast"))
+				if (players[i].isOp() || players[i].hasPermission("rb.broadcast"))
 					players[i].sendMessage(colorizeString(msg));
 			}
 			plugin.logger.info(colorizeString(msg));
@@ -71,7 +71,7 @@ public class RBStrings {
 		if (broadcastpass) {
 			Player players[] = plugin.getServer().getOnlinePlayers();
 			for (int i = 0; i < players.length; i++) {
-				if (players[i].isOp() || plugin.commandhandler.checkPerm(players[i], "rb.broadcast"))
+				if (players[i].isOp() || players[i].hasPermission("rb.broadcast"))
 					players[i].sendMessage(colorizeString(msg));
 			}
 			plugin.logger.info(colorizeString(msg));
