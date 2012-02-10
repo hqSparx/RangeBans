@@ -6,15 +6,10 @@ public class RBIPFields {
 	public String Address;
 
 	public RBIPFields(byte[] min, byte[] max, String addr) {
-		this.bMin[0] = min[0];
-		this.bMin[1] = min[1];
-		this.bMin[2] = min[2];
-		this.bMin[3] = min[3];
-		
-		this.bMax[0] = max[0];
-		this.bMax[1] = max[1];
-		this.bMax[2] = max[2];
-		this.bMax[3] = max[3];
+		for (int i = 0; i < 4; ++i) {
+			this.bMin[i] = min[i];
+			this.bMax[i] = max[i];
+		}
 		
 		this.Address = addr;
 	}
