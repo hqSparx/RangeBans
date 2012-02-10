@@ -76,12 +76,9 @@ public class RangeBans extends JavaPlugin {
 		        while ((line = input.readLine()) != null) {
 		        	line = line.trim();
 			        if (line.length() > 0) {
-			            boolean dont = false;
 			        	for (int i = 0; i < list.size(); i++) 
-			        		if (line.contentEquals(list.get(i).Address)) 
-			        				dont = true;
-			        	if (!dont) 
-			        		add(commandhandler.checkIP(line));
+			        		if (!(line.contentEquals(list.get(i).Address))) 
+			        			add(commandhandler.checkIP(line));
 			        }
 			     }
 	    	 } finally {
@@ -94,12 +91,12 @@ public class RangeBans extends JavaPlugin {
         	BufferedReader input =  new BufferedReader(new FileReader(exceptionsFile));
 	    	try {
 		        String line;
-		        while ((line = input.readLine()) != null){
+		        while ((line = input.readLine()) != null) {
 		        	line = line.trim();
 			        if (line.length() > 0) {
-			            boolean dont = false;
-			        	for (int i = 0; i < exceptions.size(); i++) if (line.contentEquals(exceptions.get(i))) dont = true;
-			        	if (!dont) exceptions.add(line);
+			        	for (int i = 0; i < exceptions.size(); i++) 
+			        		if (!(line.contentEquals(exceptions.get(i)))) 
+			        			exceptions.add(line);
 			        }
 		        }
 	    	} finally {
@@ -117,12 +114,9 @@ public class RangeBans extends JavaPlugin {
     		BufferedWriter output =  new BufferedWriter(new FileWriter(bansFile));
     		try {
     			List<String> written = new ArrayList<String>(1024);
-    			for (int i = 0; i<list.size(); i++) {
-		    	   boolean dont = false;
-		    	   for (int j = 0; j<written.size(); j++) 
-		    		   if (written.get(j).contentEquals(list.get(i).Address)) 
-		    			   dont = true;
-					if (!dont) 
+    			for (int i = 0; i < list.size(); i++) {
+		    	   for (int j = 0; j < written.size(); j++) 
+		    		   if (!(written.get(j).contentEquals(list.get(i).Address))) 
 							output.write(list.get(i).Address + "\r\n");
     			}
     		} finally {
@@ -134,12 +128,9 @@ public class RangeBans extends JavaPlugin {
 		   	BufferedWriter output =  new BufferedWriter(new FileWriter(exceptionsFile));
 			try {
 				List<String> written = new ArrayList<String>(1024);
-				for (int i = 0; i<exceptions.size(); i++) {
-					boolean dont = false;
+				for (int i = 0; i < exceptions.size(); i++) {
 					for (int j = 0; j<written.size(); j++) 
-						if (written.get(j).contentEquals(exceptions.get(i))) 
-							dont = true;
-						if (!dont) 
+						if (!(written.get(j).contentEquals(exceptions.get(i)))) 
 							output.write(exceptions.get(i) + "\r\n");
 					}
 			    } finally {
@@ -231,7 +222,7 @@ public class RangeBans extends JavaPlugin {
 		return list.get(i).Address;
 	}
 	
-	public String getException(int i){
+	public String getException(int i) {
 		return exceptions.get(i);
 	}
 	
