@@ -1,11 +1,5 @@
-to-do:
+TODO:
 *autoupdater
 *log ips and predict users ip ranges based on that
-*mysql?
-
-done for next release:
-*/listbans
-*/listexceptions
-*permissions
-*ban whole countries by hostname + whitelist config opt
-*general code tweaks
+*using mysql 
+*add custom bans with timer, when banned tries to login show him info like: You are banned for next 10 hours.
