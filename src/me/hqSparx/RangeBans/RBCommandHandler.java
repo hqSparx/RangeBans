@@ -291,7 +291,7 @@ public class RBCommandHandler {
 		plugin.strings.msg(sender, header);
 
 		if (size == 0) {
-			plugin.strings.msg(sender, "There are no entries.");
+			plugin.strings.msg(sender, "&7There are no entries.");
 		} else {
 			for (int i = pos; i < pos + PER_PAGE; i++) {
 				String line = "";
@@ -326,7 +326,7 @@ public class RBCommandHandler {
 		plugin.strings.msg(sender, header);
 		
 		if (size == 0) {
-			plugin.strings.msg(sender, "There are no entries.");
+			plugin.strings.msg(sender, "&7There are no entries.");
 		} else {
 			for (int i = pos; i < pos + PER_PAGE; i++) {
 				String line = "";
@@ -362,7 +362,7 @@ public class RBCommandHandler {
 		plugin.strings.msg(sender, header);
 		
 		if (size == 0) {
-			plugin.strings.msg(sender, "There are no entries.");
+			plugin.strings.msg(sender, "&7There are no entries.");
 		} else {
 			for (int i = pos; i < pos + PER_PAGE; i++) {
 				String line = "";
