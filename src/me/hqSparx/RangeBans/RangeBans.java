@@ -317,7 +317,7 @@ public class RangeBans extends JavaPlugin {
 		String[] split = hostname.split("\\.");
 		for(int i = split.length - 1; i >= 0; i--){
 			
-			//backward hostname
+			//backward
 			String merged = ""; 
 			for(int j = i; j < split.length; j++) {
 				merged += split[j];
