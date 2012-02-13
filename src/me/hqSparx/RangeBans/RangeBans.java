@@ -232,7 +232,7 @@ public class RangeBans extends JavaPlugin {
 		return false;
 	}
 	
-	public String get(int i){
+	public String getBan(int i){
 		return list.get(i).Address;
 	}
 	
@@ -260,7 +260,7 @@ public class RangeBans extends JavaPlugin {
 		return false;
 	}
 	
-	public int size() {
+	public int bansSize() {
 		return list.size();	
 	}
 	

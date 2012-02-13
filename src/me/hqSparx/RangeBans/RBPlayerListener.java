@@ -53,7 +53,7 @@ public class RBPlayerListener extends PlayerListener {
 		ip[2] = checkByte(split[2]);
 		ip[3] = checkByte(split[3]);
 
-			for (int i = 0; i < plugin.size(); i++) {
+			for (int i = 0; i < plugin.bansSize(); i++) {
 				if (plugin.checkmin(i, ip[0], ip[1], ip[2], ip[3]) 
 						&& plugin.checkmax(i, ip[0], ip[1], ip[2], ip[3])) {
 					if (plugin.checkexception(name)) {
@@ -98,8 +98,8 @@ public class RBPlayerListener extends PlayerListener {
 			byte[] ip = new byte[4];
 			for (int i = 0; i < 4; i++)
 				ip[i] = checkByte(split[i]);
-			if (plugin.size() > 0) 
-				for(int i = 0; i < plugin.size(); i++) {
+			if (plugin.bansSize() > 0) 
+				for(int i = 0; i < plugin.bansSize(); i++) {
 					if (plugin.checkmin(i, ip[0], ip[1], ip[2], ip[3]) 
 						&& plugin.checkmax(i, ip[0], ip[1], ip[2], ip[3])) {
 						if (plugin.checkexception(name)) {

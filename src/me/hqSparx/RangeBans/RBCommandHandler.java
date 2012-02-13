@@ -7,6 +7,8 @@ public class RBCommandHandler {
 	public static RangeBans plugin;
 	public static String regex = "[0-9\\.\\-\\*]*";
 	private boolean lastresult = true;
+	int PER_PAGE = 10;
+	
 	public RBCommandHandler(RangeBans instance) {
 		plugin = instance;
 	}
@@ -65,19 +67,19 @@ public class RBCommandHandler {
 		if (label.equalsIgnoreCase("listbans") && checkPerm(sender, "rb.list") && len <= 2) {
 			String page = "";
 			page = (args.length > 1) ? args[1] : "1";
-			writeList(sender, page, 0);
+			showBanList(sender, page);
 			return true;
 		}
 		if (label.equalsIgnoreCase("listhosts") && checkPerm(sender, "rb.list") && len <= 2) {
 			String page = "";
 			page = (args.length > 1) ? args[1] : "1";
-			writeList(sender, page, 2);
+			showHostList(sender, page);
 			return true;
 		}
 		if (label.startsWith("listex") && checkPerm(sender, "rb.list") && len <= 2) {
 			String page = "";
 			page = (args.length > 1) ? args[1] : "1";
-			writeList(sender, page, 1);
+			showExceptionList(sender, page);
 			return true;
 		}
 		
@@ -254,56 +256,122 @@ public class RBCommandHandler {
 				plugin.strings.msg(sender, ("&cFailed to load player's IP: " + name));
 		}
 	}
-	/**
-	 * 
-	 * @param sender
-	 * @param pagestr
-	 * @param type 0 - bans, 1 - exceptions, 2 - hostbans
-	 */
 	
-	public void writeList(CommandSender sender, String pagestr, int type) {
-		for (int i = 0; i < pagestr.length(); ++i) {
-			if (!Character.isDigit(pagestr.charAt(i))) {
-				plugin.strings.msg(sender, "Only digits!");
-				return;
+	private boolean checkDigit(String check) {
+		for (int i = 0; i < check.length(); ++i) {
+			if (!Character.isDigit(check.charAt(i))) {
+				return false;
 			}
 		}
-		final int PER_PAGE = 10;
-		int page = Integer.parseInt(pagestr);
-		int pos = PER_PAGE * (page - 1);
-		int size = plugin.size();
+		return true;
+	}
+	
+	public void showBanList(CommandSender sender, String pagestr) {
+		if (!checkDigit(pagestr)) {
+			plugin.strings.msg(sender, "Only positive digits!");
+			return;
+		}
 		
-		if (page > size / PER_PAGE + 1 || page == 0) {
+		int page = Integer.parseInt(pagestr);
+		int pos = this.PER_PAGE * (page - 1);
+		int size = plugin.bansSize();
+		
+		if (page > size / PER_PAGE + 1) {
 			page = size / PER_PAGE + 1;
+			pos = size - size % PER_PAGE;
+		} else if (page == 0)  {
+			pos = 0;
+			page = 1;
 		}
 		
 		String header = "";
-		if (type == 0) 
-			header = "&6Bans list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";
-		else if (type == 1) 
-			header = "&6Exceptions list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";
-		else if (type == 2)
-			header = "&6Hostname bans list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";		
-		else
-				return;
+		header = "&6Bans list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";
 		plugin.strings.msg(sender, header);
 		
 		if (size == 0) {
-			plugin.strings.msg(sender, "There are no banned entries.");
+			plugin.strings.msg(sender, "There are no entries.");
 		} else {
 			for (int i = pos; i < pos + PER_PAGE; i++) {
 				String line = "";
-				if (i < size)
-					if (type == 0) 
-						line = "&7#" + (i + 1) + " &a" + plugin.get(i);
-					else if (type == 1) 
-						line = "&7#" + (i + 1) + " &a" + plugin.getException(i);
-					else
-						line = "&7#" + (i + 1) + " &a" + plugin.getHost(i);
-				plugin.strings.msg(sender, line);
+				if (i < size) {
+					line = "&7#" + (i + 1) + " &a" + plugin.getBan(i);
+					plugin.strings.msg(sender, line);
+				}
 			}
 		}
 		
-	}	
-
+	}
+	
+	public void showExceptionList(CommandSender sender, String pagestr) {
+		if (!checkDigit(pagestr)) {
+			plugin.strings.msg(sender, "Only positive digits!");
+			return;
+		}
+		
+		int page = Integer.parseInt(pagestr);
+		int pos = this.PER_PAGE * (page - 1);
+		int size = plugin.exceptionsSize();
+		
+		if (page > size / PER_PAGE + 1) {
+			page = size / PER_PAGE + 1;
+			pos = size - size % PER_PAGE;
+		} else if (page == 0)  {
+			pos = 0;
+			page = 1;
+		}
+		
+		String header = "";
+		header = "&6Exceptions list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";
+		plugin.strings.msg(sender, header);
+		
+		if (size == 0) {
+			plugin.strings.msg(sender, "There are no entries.");
+		} else {
+			for (int i = pos; i < pos + PER_PAGE; i++) {
+				String line = "";
+				if (i < size) {
+					line = "&7#" + (i + 1) + " &a" + plugin.getException(i);
+					plugin.strings.msg(sender, line);
+				}
+			}
+		}
+		
+	}
+	
+	public void showHostList(CommandSender sender, String pagestr) {
+		if (!checkDigit(pagestr)) {
+			plugin.strings.msg(sender, "Only positive digits!");
+			return;
+		}
+		
+		int page = Integer.parseInt(pagestr);
+		int pos = this.PER_PAGE * (page - 1);
+		int size = plugin.hostsSize();
+		
+		if (page > size / PER_PAGE + 1) {
+			page = size / PER_PAGE + 1;
+			pos = size - size % PER_PAGE;
+		} else if (page == 0)  {
+			pos = 0;
+			page = 1;
+		}
+		
+		String header = "";
+		header = "&6Hostname bans list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";
+		plugin.strings.msg(sender, header);
+		
+		if (size == 0) {
+			plugin.strings.msg(sender, "There are no entries.");
+		} else {
+			for (int i = pos; i < pos + PER_PAGE; i++) {
+				String line = "";
+				if (i < size) {
+					line = "&7#" + (i + 1) + " &a" + plugin.getHost(i);
+					plugin.strings.msg(sender, line);
+				}
+			}
+		}
+		
+	}
+	
 }
