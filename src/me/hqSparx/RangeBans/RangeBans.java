@@ -90,7 +90,7 @@ public class RangeBans extends JavaPlugin {
 	    	 } finally {
 	    		 input.close();
 	    	 }
-	    } catch (Exception e) { logger.info("Cant load bans.txt"); }
+	    } catch (Exception e) { logger.info("[RangeBans] Cant load bans.txt"); }
     	 
     	
     	try {
@@ -110,7 +110,7 @@ public class RangeBans extends JavaPlugin {
 	    	} finally {
 	    		input.close();
      	    }
-    	} catch (Exception e) { logger.info("Cant load exceptions.txt"); } 	
+    	} catch (Exception e) { logger.info("[RangeBans] Cant load exceptions.txt"); } 	
     	
     	try {
         	BufferedReader input =  new BufferedReader(new FileReader(hostnamesFile));
@@ -129,7 +129,7 @@ public class RangeBans extends JavaPlugin {
 	    	} finally {
 	    		input.close();
      	    }
-    	} catch (Exception e) { logger.info("Cant load hostnames.txt"); } 	
+    	} catch (Exception e) { logger.info("[RangeBans] Cant load hostnames.txt"); } 	
     	
     }
     

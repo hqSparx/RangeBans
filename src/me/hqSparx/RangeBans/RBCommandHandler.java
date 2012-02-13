@@ -21,8 +21,8 @@ public class RBCommandHandler {
 	public boolean command(CommandSender sender, String[] args) {
 		
 		if ((args.length == 0 || args.length > 4)) {
-			if(checkPerm(sender, "rb.help")){
-			plugin.strings.sendHelp(sender);
+			if (checkPerm(sender, "rb.help")) {
+				plugin.strings.sendHelp(sender);
 			}
 			return true;
 		}
@@ -65,19 +65,19 @@ public class RBCommandHandler {
 		if (label.equalsIgnoreCase("listbans") && checkPerm(sender, "rb.list") && len <= 2) {
 			String page = "";
 			page = (args.length > 1) ? args[1] : "1";
-			bansList(sender, page);
+			writeList(sender, page, 0);
 			return true;
 		}
 		if (label.equalsIgnoreCase("listhosts") && checkPerm(sender, "rb.list") && len <= 2) {
 			String page = "";
 			page = (args.length > 1) ? args[1] : "1";
-			hostbansList(sender, page);
+			writeList(sender, page, 2);
 			return true;
 		}
 		if (label.startsWith("listex") && checkPerm(sender, "rb.list") && len <= 2) {
 			String page = "";
 			page = (args.length > 1) ? args[1] : "1";
-			exceptionsList(sender, page);
+			writeList(sender, page, 1);
 			return true;
 		}
 		
@@ -254,59 +254,56 @@ public class RBCommandHandler {
 				plugin.strings.msg(sender, ("&cFailed to load player's IP: " + name));
 		}
 	}
+	/**
+	 * 
+	 * @param sender
+	 * @param pagestr
+	 * @param type 0 - bans, 1 - exceptions, 2 - hostbans
+	 */
 	
-	
-	public void bansList(CommandSender sender, String pagestr) {
+	public void writeList(CommandSender sender, String pagestr, int type) {
+		for (int i = 0; i < pagestr.length(); ++i) {
+			if (!Character.isDigit(pagestr.charAt(i))) {
+				plugin.strings.msg(sender, "Only digits!");
+				return;
+			}
+		}
 		final int PER_PAGE = 10;
 		int page = Integer.parseInt(pagestr);
 		int pos = PER_PAGE * (page - 1);
 		int size = plugin.size();
 		
-		String header = "&6Bans list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";	
+		if (page > size / PER_PAGE + 1 || page == 0) {
+			page = size / PER_PAGE + 1;
+		}
+		
+		String header = "";
+		if (type == 0) 
+			header = "&6Bans list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";
+		else if (type == 1) 
+			header = "&6Exceptions list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";
+		else if (type == 2)
+			header = "&6Hostname bans list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";		
+		else
+				return;
 		plugin.strings.msg(sender, header);
 		
-		for (int i = pos; i < pos + PER_PAGE; i++) {
-			String line = "";
-			if (i < size)
-				line = "&7#" + (i + 1) + " &a" + plugin.get(i);
-			plugin.strings.msg(sender, line);
+		if (size == 0) {
+			plugin.strings.msg(sender, "There are no banned entries.");
+		} else {
+			for (int i = pos; i < pos + PER_PAGE; i++) {
+				String line = "";
+				if (i < size)
+					if (type == 0) 
+						line = "&7#" + (i + 1) + " &a" + plugin.get(i);
+					else if (type == 1) 
+						line = "&7#" + (i + 1) + " &a" + plugin.getException(i);
+					else
+						line = "&7#" + (i + 1) + " &a" + plugin.getHost(i);
+				plugin.strings.msg(sender, line);
+			}
 		}
-	}
-	
-	
-	public void exceptionsList(CommandSender sender, String pagestr) {
-		final int PER_PAGE = 10;
-		int page = Integer.parseInt(pagestr);
-		int pos = PER_PAGE * (page - 1);
-		int size = plugin.exceptionsSize();
 		
-		String header = "&6Exceptions list (page " + page + "/" + ( size / PER_PAGE + 1 ) + ")";		
-		plugin.strings.msg(sender, header);
-		
-		for (int i = pos; i < pos + PER_PAGE; i++) {
-			String line = "";
-			if (i < size)
-				line = "&7#" + (i + 1) + " &a" + plugin.getException(i);
-			plugin.strings.msg(sender, line);
-		}
-	}
-	
-	public void hostbansList(CommandSender sender, String pagestr) {
-		final int PER_PAGE = 10;
-		int page = Integer.parseInt(pagestr);
-		int pos = PER_PAGE * (page - 1);
-		int size = plugin.hostsSize();
-		
-		String header = "&6Hostname bans list (page " + page + "/" + ( size / PER_PAGE + 1 ) + ")";		
-		plugin.strings.msg(sender, header);
-		
-		for (int i = pos; i < pos + PER_PAGE; i++) {
-			String line = "";
-			if (i < size)
-				line = "&7#" + (i + 1) + " &a" + plugin.getHost(i);
-			plugin.strings.msg(sender, line);
-		}
-	}
-	
+	}	
 
 }
