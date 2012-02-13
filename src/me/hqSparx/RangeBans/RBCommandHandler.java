@@ -124,11 +124,11 @@ public class RBCommandHandler {
 		} else {
 			for(int i = 0; i < 4; i++) {		
 				if (split.length - 1 < i) {
-					min[i] = 0; max[i] = -128;	
+					min[i] = 0; max[i] = -1;	
 					ip2 += "*";	
 				} else if (split[i] == null || split[i].contentEquals("*") 
 							|| split[i].contentEquals("")) {
-					min[i] = 0; max[i] = -128;	
+					min[i] = 0; max[i] = -1;	
 					ip2 += "*";
 				} else if (split[i].contains("-")){
 					String[] split2 = split[i].split("\\-");
@@ -140,14 +140,15 @@ public class RBCommandHandler {
 					max[i] = checkByte(split[i]);
 					ip2 += split[i];
 				}
-				/*
-				plugin.logger.info(min[0]+"-"+max[0]+"."+min[1]+"-"+max[1]+"."+
-						min[2]+"-"+max[2]+"."+min[3]+"-"+max[3]);
-				*/
+				
 				if (i < 3)
 					ip2 += ".";
 			}
 		}
+		/*
+		plugin.logger.info(min[0]+"-"+max[0]+"."+min[1]+"-"+max[1]+"."+
+				min[2]+"-"+max[2]+"."+min[3]+"-"+max[3]);
+				*/
 		return new RBIPFields(min, max, ip2);
 	}
 	
@@ -273,6 +274,7 @@ public class RBCommandHandler {
 		}
 		
 		int page = Integer.parseInt(pagestr);
+<<<<<<< HEAD
 		int pos = this.PER_PAGE * (page - 1);
 		int size = plugin.bansSize();
 		
@@ -290,12 +292,48 @@ public class RBCommandHandler {
 		
 		if (size == 0) {
 			plugin.strings.msg(sender, "There are no entries.");
+=======
+		int pos = PER_PAGE * (page - 1);
+		int size = 0;
+		
+		String header = "";
+		if (type == 0) {
+			size = plugin.size();
+			header = "&6Bans list";
+		}
+		else if (type == 1) {
+			size = plugin.exceptionsSize();
+			header = "&6Exceptions list";
+		}
+		else if (type == 2) {
+			size = plugin.hostsSize();
+			header = "&6Hostname bans list";
+		}
+		else
+				return;
+		
+		header += "(" + page + "/" +  ( size / PER_PAGE + 1 ) + ")";
+		plugin.strings.msg(sender, header);
+		
+		if (size == 0) {
+			plugin.strings.msg(sender, "&7There are no entries.");
+>>>>>>> 5a0c53331ea6b00db632f85270e2f6dfc98e0008
 		} else {
 			for (int i = pos; i < pos + PER_PAGE; i++) {
 				String line = "";
 				if (i < size) {
+<<<<<<< HEAD
 					line = "&7#" + (i + 1) + " &a" + plugin.getBan(i);
 					plugin.strings.msg(sender, line);
+=======
+					if (type == 0) 
+						line = "&7#" + (i + 1) + " &a" + plugin.get(i);
+					else if (type == 1) 
+						line = "&7#" + (i + 1) + " &a" + plugin.getException(i);
+					else
+						line = "&7#" + (i + 1) + " &a" + plugin.getHost(i);
+				plugin.strings.msg(sender, line);
+>>>>>>> 5a0c53331ea6b00db632f85270e2f6dfc98e0008
 				}
 			}
 		}
