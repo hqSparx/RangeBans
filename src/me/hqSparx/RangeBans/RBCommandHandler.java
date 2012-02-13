@@ -274,7 +274,7 @@ public class RBCommandHandler {
 		}
 		
 		int page = Integer.parseInt(pagestr);
-<<<<<<< HEAD
+
 		int pos = this.PER_PAGE * (page - 1);
 		int size = plugin.bansSize();
 		
@@ -289,55 +289,18 @@ public class RBCommandHandler {
 		String header = "";
 		header = "&6Bans list (page " + page + "/" +  ( size / PER_PAGE + 1 ) + ")";
 		plugin.strings.msg(sender, header);
-		
+
 		if (size == 0) {
 			plugin.strings.msg(sender, "There are no entries.");
-=======
-		int pos = PER_PAGE * (page - 1);
-		int size = 0;
-		
-		String header = "";
-		if (type == 0) {
-			size = plugin.size();
-			header = "&6Bans list";
-		}
-		else if (type == 1) {
-			size = plugin.exceptionsSize();
-			header = "&6Exceptions list";
-		}
-		else if (type == 2) {
-			size = plugin.hostsSize();
-			header = "&6Hostname bans list";
-		}
-		else
-				return;
-		
-		header += "(" + page + "/" +  ( size / PER_PAGE + 1 ) + ")";
-		plugin.strings.msg(sender, header);
-		
-		if (size == 0) {
-			plugin.strings.msg(sender, "&7There are no entries.");
->>>>>>> 5a0c53331ea6b00db632f85270e2f6dfc98e0008
 		} else {
 			for (int i = pos; i < pos + PER_PAGE; i++) {
 				String line = "";
 				if (i < size) {
-<<<<<<< HEAD
 					line = "&7#" + (i + 1) + " &a" + plugin.getBan(i);
 					plugin.strings.msg(sender, line);
-=======
-					if (type == 0) 
-						line = "&7#" + (i + 1) + " &a" + plugin.get(i);
-					else if (type == 1) 
-						line = "&7#" + (i + 1) + " &a" + plugin.getException(i);
-					else
-						line = "&7#" + (i + 1) + " &a" + plugin.getHost(i);
-				plugin.strings.msg(sender, line);
->>>>>>> 5a0c53331ea6b00db632f85270e2f6dfc98e0008
 				}
 			}
 		}
-		
 	}
 	
 	public void showExceptionList(CommandSender sender, String pagestr) {
