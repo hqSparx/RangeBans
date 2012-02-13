@@ -30,51 +30,51 @@ public class RBCommandHandler {
 		int len = args.length;
 		String label = args[0];	
 			
-		if (label.equals("reload") && checkPerm(sender, "rb.reload")) {
+		if (label.equalsIgnoreCase("reload") && checkPerm(sender, "rb.reload")) {
 			plugin.doReload(sender);
 			return true;
 		}
-		if (label.equals("ban") && checkPerm(sender, "rb.ban") && len >= 2) {
+		if (label.equalsIgnoreCase("ban") && checkPerm(sender, "rb.ban") && len >= 2) {
 			ban(sender, args);
 			return true;
 		}
-		if (label.equals("unban") && checkPerm(sender, "rb.ban") && len >= 2) {
+		if (label.equalsIgnoreCase("unban") && checkPerm(sender, "rb.ban") && len >= 2) {
 			unban(sender, args);
 			return true;
 		}
-		if (label.equals("banhost") && checkPerm(sender, "rb.ban") && len == 2) {
+		if (label.equalsIgnoreCase("banhost") && checkPerm(sender, "rb.ban") && len == 2) {
 			banhost(sender, args[1]);
 			return true;
 		}
-		if (label.equals("unbanhost") && checkPerm(sender, "rb.ban") && len == 2) {
+		if (label.equalsIgnoreCase("unbanhost") && checkPerm(sender, "rb.ban") && len == 2) {
 			unbanhost(sender, args[1]);
 			return true;
 		}
-		if (label.equals("exception") && checkPerm(sender, "rb.exception") && len == 2) {
+		if (label.equalsIgnoreCase("exception") && checkPerm(sender, "rb.exception") && len == 2) {
 			exception(sender, args[1]);
 			return true;
 		}
-		if (label.contains("removeex") && checkPerm(sender, "rb.exception") && len == 2) {
+		if (label.startsWith("removeex") && checkPerm(sender, "rb.exception") && len == 2) {
 			removeexception(sender, args[1]);
 			return true;
 		}
-		if (label.equals("ip") && checkPerm(sender, "rb.check") && len == 2) {
+		if (label.equalsIgnoreCase("ip") && checkPerm(sender, "rb.check") && len == 2) {
 			checkip(sender, args[1]);
 			return true;
 		}
-		if (label.equals("listbans") && checkPerm(sender, "rb.list") && len <= 2) {
+		if (label.equalsIgnoreCase("listbans") && checkPerm(sender, "rb.list") && len <= 2) {
 			String page = "";
 			page = (args.length > 1) ? args[1] : "1";
 			bansList(sender, page);
 			return true;
 		}
-		if (label.equals("listhosts") && checkPerm(sender, "rb.list") && len <= 2) {
+		if (label.equalsIgnoreCase("listhosts") && checkPerm(sender, "rb.list") && len <= 2) {
 			String page = "";
 			page = (args.length > 1) ? args[1] : "1";
 			hostbansList(sender, page);
 			return true;
 		}
-		if (label.contains("listex") && checkPerm(sender, "rb.list") && len <= 2) {
+		if (label.startsWith("listex") && checkPerm(sender, "rb.list") && len <= 2) {
 			String page = "";
 			page = (args.length > 1) ? args[1] : "1";
 			exceptionsList(sender, page);
