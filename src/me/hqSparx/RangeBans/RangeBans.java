@@ -39,7 +39,7 @@ public class RangeBans extends JavaPlugin {
 	public void onEnable() {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, this.listener, Event.Priority.Lowest, this);
-		pm.registerEvent(Event.Type.PLAYER_JOIN, this.listener, Event.Priority.Lowest, this);
+		pm.registerEvent(Event.Type.PLAYER_JOIN, this.listener, Event.Priority.Monitor, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		
 		try {
@@ -244,19 +244,11 @@ public class RangeBans extends JavaPlugin {
 		return hostnames.get(i);
 	}
 
-	public boolean checkmin(int i, byte a, byte b, byte c, byte d) {
-		//	logger.info("bmin0:" + list.get(i).bMin[0] + " bmin1:" + list.get(i).bMin[1] + " bmin2:" + list.get(i).bMin[2] + " bmin3:" + list.get(i).bMin[3]);
-		//	logger.info("bmax0:" + list.get(i).bMax[0] + " bmax1:" + list.get(i).bMax[1] + " bmax2:" + list.get(i).bMax[2] + " bmax3:" + list.get(i).bMax[3]);
-		if (list.get(i).checkmin(a, b, c, d)) 
-			return true;
-
-		return false;
-	}
-	
-	public boolean checkmax(int i, byte a, byte b, byte c, byte d) {
-		if (list.get(i).checkmax(a, b, c, d)) 
-			return true;
-		
+	public boolean checkIP(byte a, byte b, byte c, byte d) {
+		for (int i = 0; i < bansSize(); i++) {
+			if (list.get(i).checkmin(a, b, c, d) && list.get(i).checkmax(a, b, c, d)) 
+				return true;
+		}
 		return false;
 	}
 	
@@ -292,7 +284,7 @@ public class RangeBans extends JavaPlugin {
 		for (int i = 0; i < exceptions.size(); i++) {
 			if (exceptions.get(i).contentEquals(name))
 				return true;		
-		}
+			}
 		
 		return false;	
 	}	
