@@ -30,8 +30,8 @@ public class RBIPFields {
 	}
 	
 	public boolean checkmax(byte a, byte b, byte c, byte d) {
-		if(rUns(a) > rUns(bMax[0]) && rUns(b) > rUns(bMax[1])
-			&& rUns(c) > rUns(bMax[2]) && rUns(d) > rUns(bMax[3]))
+		if(rUns(a) > rUns(bMax[0]) || rUns(b) > rUns(bMax[1])
+			|| rUns(c) > rUns(bMax[2]) || rUns(d) > rUns(bMax[3]))
 				return false;
 		
 		return true;
