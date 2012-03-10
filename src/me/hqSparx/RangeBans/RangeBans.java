@@ -13,9 +13,10 @@ import java.util.logging.Logger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.Event;
+//import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
+//import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class RangeBans extends JavaPlugin {
@@ -38,8 +39,7 @@ public class RangeBans extends JavaPlugin {
 	
 	public void onEnable() {
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Event.Type.PLAYER_LOGIN, this.listener, Event.Priority.Lowest, this);
-		pm.registerEvent(Event.Type.PLAYER_JOIN, this.listener, Event.Priority.Monitor, this);
+	    pm.registerEvents(this.listener, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		
 		try {

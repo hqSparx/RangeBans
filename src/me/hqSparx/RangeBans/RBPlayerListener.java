@@ -2,12 +2,15 @@ package me.hqSparx.RangeBans;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
-public class RBPlayerListener extends PlayerListener {
+public class RBPlayerListener implements Listener {
 	
 	/* DEBUG
 	Calendar cal;
@@ -28,7 +31,7 @@ public class RBPlayerListener extends PlayerListener {
 	
 	boolean alternative = false;
 	
-	@Override
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerLogin (PlayerLoginEvent event)
 	{
 		/* DEBUG
@@ -51,6 +54,10 @@ public class RBPlayerListener extends PlayerListener {
 		}
 		try {
 			hostname = InetAddress.getByName(ipstring).getHostName();
+			/*if(hostname.contentEquals(ipstring)){
+				plugin.logger.info("[RangeBans] Failed to get hostname. Forcing a reverse name lookup.");
+			hostname = InetAddress.getByName(ipstring).getCanonicalHostName();
+			}*/
 		} catch (UnknownHostException e) {}
 		
 		plugin.logger.info("[RangeBans] " + name + " connected. Detected ip: " 
@@ -93,7 +100,7 @@ public class RBPlayerListener extends PlayerListener {
 			*/
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin (PlayerJoinEvent event) {
 		
 		/* DEBUG
