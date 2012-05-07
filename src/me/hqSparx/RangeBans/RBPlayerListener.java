@@ -14,7 +14,7 @@ public class RBPlayerListener implements Listener {
 	
 	/* DEBUG
 	Calendar cal;
-	long start, stop, start2, stop2;
+	long start, stop;
 	*/
    
 	public static RangeBans plugin;
@@ -29,9 +29,8 @@ public class RBPlayerListener implements Listener {
 			return Byte.parseByte(word);
 		}
 	
-	boolean alternative = false;
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler
 	public void onPlayerLogin (PlayerLoginEvent event)
 	{
 		/* DEBUG
@@ -42,14 +41,15 @@ public class RBPlayerListener implements Listener {
         if (!event.getResult().equals(Result.ALLOWED))
             return;
         
-        alternative = false;
 		String ipstring  = event.getKickMessage();
 		String name = event.getPlayer().getName();
 		String hostname = "";
+		
+			
+			
 		if (ipstring == "" || ipstring == null) {
 			plugin.logger.info("[RangeBans] Warning! Couldn't load "+name
-				+"'s IP. Possibly plugins conflict. Using alternative method."); 
-			alternative = true; 
+				+"'s IP."); 
 			return;
 		}
 		try {
@@ -100,75 +100,6 @@ public class RBPlayerListener implements Listener {
 			*/
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerJoin (PlayerJoinEvent event) {
-		
-		/* DEBUG
-		cal = Calendar.getInstance();  
-		start2 = cal.getTimeInMillis();
-		*/
-		
-        if (alternative == true) {
-			String ipstring  = event.getPlayer().getAddress().getAddress().getHostAddress();
-			String name = event.getPlayer().getName();
-			String hostname = "";
-			if (ipstring == "" || ipstring == null) {
-				plugin.logger.info("[RangeBans] Warning! Couldn't load "+name
-					+"'s IP using alternative method."); 
-				return;
-			}
-			try {
-				hostname = InetAddress.getByName(ipstring).getHostName();
-			} catch (UnknownHostException e) {}
-			
-			plugin.logger.info("[RangeBans] " + name + " connected. Detected ip: " 
-									+ ipstring + " Detected hostname: " + hostname);
-			String[] split = ipstring.split("\\.");
-			byte[] ip = new byte[4];
-			ip[0] = checkByte(split[0]);
-			ip[1] = checkByte(split[1]);
-			ip[2] = checkByte(split[2]);
-			ip[3] = checkByte(split[3]);
-
-				if (plugin.checkIP(ip[0], ip[1], ip[2], ip[3])) {
-					if (plugin.checkexception(name)) {
-						plugin.strings.BroadcastPass(name, ipstring);
-						return;
-					} else {
-						plugin.strings.BroadcastBlock(name, ipstring);
-						event.getPlayer().kickPlayer(plugin.strings.kick());
-						return;
-					}
-				}
-				
-				if (hostname.length() > 0 && plugin.checkhostname(hostname)) {
-					if (plugin.checkexception(name)) {
-						plugin.strings.BroadcastPass(name, hostname);
-						return;
-				}	else {
-						plugin.strings.BroadcastBlock(name, hostname);
-						event.getPlayer().kickPlayer(plugin.strings.kick());
-						return;
-					}
-				
-				}
-        }
-        /* DEBUG
-        cal = Calendar.getInstance();  
-        stop2 = cal.getTimeInMillis();
-        this.plugin.logger.info("[RangeBans] onLogin took: " + (stop-start) + " ms.");
-        this.plugin.logger.info("[RangeBans] onJoin took: " + (stop2-start2) + " ms.");
-        this.plugin.logger.info("[RangeBans] Total (all plugins): " + (stop2-start) + " ms.");
-        */
-        }
-	
-	/* removes "x left the game"
-	@Override
-	public void onPlayerKick (PlayerKickEvent event) {
-		if((event.getReason()).equals(plugin.strings.kick())) 
-		event.setLeaveMessage(null);
-	}
-	*/
 	
 }
 	
