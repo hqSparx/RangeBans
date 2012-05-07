@@ -18,6 +18,7 @@ public class RBPlayerListener implements Listener {
 	*/
    
 	public static RangeBans plugin;
+	public static boolean hostnames = false;
 	public RBPlayerListener(RangeBans instance) {
 		plugin = instance;
 	}
@@ -29,6 +30,9 @@ public class RBPlayerListener implements Listener {
 			return Byte.parseByte(word);
 		}
 	
+	public void enableHostnames(boolean boo){
+		hostnames = boo;
+	}
 	
 	@EventHandler
 	public void onPlayerLogin (PlayerLoginEvent event)
@@ -43,25 +47,15 @@ public class RBPlayerListener implements Listener {
         
 		String ipstring  = event.getKickMessage();
 		String name = event.getPlayer().getName();
-		String hostname = "";
-		
-			
+
 			
 		if (ipstring == "" || ipstring == null) {
 			plugin.logger.info("[RangeBans] Warning! Couldn't load "+name
-				+"'s IP."); 
+				+"'s IP: " + ipstring); 
 			return;
 		}
-		try {
-			hostname = InetAddress.getByName(ipstring).getHostName();
-			/*if(hostname.contentEquals(ipstring)){
-				plugin.logger.info("[RangeBans] Failed to get hostname. Forcing a reverse name lookup.");
-			hostname = InetAddress.getByName(ipstring).getCanonicalHostName();
-			}*/
-		} catch (UnknownHostException e) {}
-		
-		plugin.logger.info("[RangeBans] " + name + " connected. Detected ip: " 
-								+ ipstring + " Detected hostname: " + hostname);
+		//plugin.logger.info("[RangeBans] " + name + " connected. Detected ip: " 
+		//						+ ipstring);
 		String[] split = ipstring.split("\\.");
 		byte[] ip = new byte[4];
 		ip[0] = checkByte(split[0]);
@@ -81,6 +75,13 @@ public class RBPlayerListener implements Listener {
 				}
 			}
 			
+	if(hostnames){
+				String hostname = "";
+		try {
+			hostname = InetAddress.getByName(ipstring).getHostName();
+			}
+		    catch (UnknownHostException e) {}
+		
 			if (hostname.length() > 0 && plugin.checkhostname(hostname)) {
 				if (plugin.checkexception(name)) {
 					plugin.strings.BroadcastPass(name, hostname);
@@ -93,6 +94,7 @@ public class RBPlayerListener implements Listener {
 				}
 			
 			}
+	}
 			
 			/* DEBUG
 			cal = Calendar.getInstance();  

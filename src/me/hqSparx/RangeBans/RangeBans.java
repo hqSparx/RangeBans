@@ -59,12 +59,14 @@ public class RangeBans extends JavaPlugin {
     	config.addDefault("broadcast-passes", true);
     	config.addDefault("use-hostnames-as-whitelist", false);
     	config.addDefault("ban-msg", "&cSorry, you are banned from this server.");
+    	config.addDefault("enable-hostname-bans", false);
     	config.options().copyDefaults(true);
         config.save(cfgFile);
 	    strings.SetBroadcastBlocks(config.getBoolean("broadcast-kicks"));  
 	    strings.SetBroadcastPasses(config.getBoolean("broadcast-passes"));  
 	    whitelist = config.getBoolean("use-hostnames-as-whitelist");
 	    strings.SetBanMsg(config.getString("ban-msg")); 
+	    listener.enableHostnames(config.getBoolean("enable-hostname-bans"));  
 	 }
     
     //TODO refactor it
